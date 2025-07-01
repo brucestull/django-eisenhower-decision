@@ -2,7 +2,7 @@
 
 - [Django Eisenhower Matrix App](https://chatgpt.com/c/685e8571-2a98-8002-8aab-452e446eb1a5)
 
-```
+```python
 # models.py
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -48,8 +48,10 @@ class DecisionResponse(models.Model):
 
     def __str__(self):
         return f"{self.decision.title} → {self.prompt.slug} = {self.answer}"
+```
 
-# fixtures/prompts.json (to seed your two matrix questions)
+```json
+// fixtures/prompts.json (to seed your two matrix questions)
 [
   {
     "model": "yourapp.prompt",
@@ -70,7 +72,9 @@ class DecisionResponse(models.Model):
     }
   }
 ]
+```
 
+```python
 # forms.py
 from django import forms
 from .models import Decision
@@ -89,7 +93,9 @@ class DecisionResponseForm(forms.Form):
         }),
         label=""
     )
+```
 
+```python
 # views.py
 import json
 from django.shortcuts import render, redirect, get_object_or_404
@@ -167,7 +173,9 @@ def decision_flow_json(request, decision_id):
 def decision_result(request, decision_id):
     decision = get_object_or_404(Decision, id=decision_id, user=request.user)
     return render(request, 'yourapp/decision_result.html', {'decision': decision})
+```
 
+```python
 # urls.py
 from django.urls import path
 from . import views
@@ -178,7 +186,9 @@ urlpatterns = [
     path('decisions/<int:decision_id>/flow/json/', views.decision_flow_json, name='decision_flow_json'),
     path('decisions/<int:decision_id>/result/', views.decision_result, name='decision_result'),
 ]
+```
 
+```html
 # templates/yourapp/decision_flow.html
 {% extends 'base.html' %}
 {% block content %}
