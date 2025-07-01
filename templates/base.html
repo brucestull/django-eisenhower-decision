@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock title %}</title>
+    </head>
+    <body>
+        <main>
+            <a
+                href="https://github.com/brucestull/DjangoStarter-heroku"
+                target="_blank"
+                >
+                DjangoStarter-heroku GitHub Repository
+            </a>
+            {% if user.is_staff %}
+                {% include 'staff.html' %}
+            {% endif %}
+
+            {% include 'user.html' %}
+
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </body>
+</html>
