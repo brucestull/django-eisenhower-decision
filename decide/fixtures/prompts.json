@@ -1,0 +1,20 @@
+[
+  {
+    "model": "decide.prompt",
+    "pk": 1,
+    "fields": {
+      "slug": "is_urgent",
+      "order": 1,
+      "text": "Is this task urgent?"
+    }
+  },
+  {
+    "model": "decide.prompt",
+    "pk": 2,
+    "fields": {
+      "slug": "is_important",
+      "order": 2,
+      "text": "Is this task important?"
+    }
+  }
+]

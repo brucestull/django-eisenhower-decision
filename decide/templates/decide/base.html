@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% block title %}
+        Eisenhower Matrix
+      {% endblock %}
+    </title>
+
+    <!-- Tailwind CSS (CDN for quick start) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+
+  <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="bg-white shadow">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-xl font-semibold"><a href="{% url 'decide:create_decision' %}" class="hover:text-indigo-600">Eisenhower Matrix</a></h1>
+        <nav class="space-x-4">
+          <a href="{% url 'decide:create_decision' %}" class="text-sm font-medium text-indigo-600 hover:underline">New</a>
+          <a href="{% url 'decide:decision_list' %}" class="text-sm font-medium text-indigo-600 hover:underline">Decisions</a>
+          <a href="{% url 'decide:response_list' %}" class="text-sm font-medium text-indigo-600 hover:underline">Responses</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    <!-- Footer (optional) -->
+    <footer class="bg-white border-t">
+      <div class="container mx-auto px-4 py-4 text-center text-sm text-gray-600">
+        &copy;{% now 'Y' %}Decide
+      </div>
+    </footer>
+
+    {% block extra_js %}
+    {% endblock %}
+  </body>
+</html>

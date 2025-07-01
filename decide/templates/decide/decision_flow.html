@@ -1,0 +1,76 @@
+{# decide/templates/decide/decision_flow.html #}
+{% extends 'decide/base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto mt-12 p-8 bg-white rounded-2xl shadow-lg">
+  <h2 class="text-2xl font-bold mb-4 text-center">{{ decision.title }}</h2>
+
+  <!-- Progress bar -->
+  <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
+    <div id="progress-bar" class="h-2 rounded-full bg-indigo-600" style="width: 0%;"></div>
+  </div>
+
+  <div id="prompt-container" data-total="{{ total_prompts }}" data-answered="0">
+    <p id="prompt-text" class="text-lg text-center font-medium mb-6">{{ prompt.text }}</p>
+  </div>
+
+  <div class="flex justify-around mb-6">
+    <button data-value="True" class="answer-btn py-2 px-6 bg-green-100 hover:bg-green-200 rounded-lg font-semibold focus:outline-none">Yes</button>
+    <button data-value="False" class="answer-btn py-2 px-6 bg-red-100 hover:bg-red-200 rounded-lg font-semibold focus:outline-none">No</button>
+  </div>
+
+  <div id="result-container" class="hidden text-center"></div>
+</div>
+
+<script>
+(function() {
+  const decisionId = {{ decision.id }};
+  const flowUrl = `{% url 'decide:decision_flow_json' decision.id %}`;
+  const promptContainer = document.getElementById('prompt-container');
+  const promptText = document.getElementById('prompt-text');
+  const progressBar = document.getElementById('progress-bar');
+  const total = parseInt(promptContainer.dataset.total, 10);
+  let answered = 0;
+
+  document.querySelectorAll('.answer-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const answer = btn.dataset.value === 'True';
+      const currentId = promptContainer.dataset.current || {{ prompt.id }};
+
+      // disable buttons
+      document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+
+      fetch(flowUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ prompt_id: currentId, answer })
+      })
+      .then(resp => resp.json())
+      .then(data => {
+        answered++;
+        const percent = Math.round((answered / total) * 100);
+        progressBar.style.width = percent + '%';
+
+        if (data.text) {
+          promptText.textContent = data.text;
+          promptContainer.dataset.current = data.prompt_id;
+          document.querySelectorAll('.answer-btn').forEach(b => b.disabled = false);
+        } else if (data.quadrant) {
+          document.querySelector('.max-w-md').innerHTML =
+            `<h2 class="text-2xl font-bold mb-4 text-center">Result: ${data.quadrant}</h2>` +
+            `<div class="text-center mt-4">` +
+            `<a href="{% url 'decide:create_decision' %}" class="py-2 px-4 bg-indigo-600 text-white rounded-lg">New Decision</a>` +
+            `</div>`;
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Something went wrong.');
+      });
+    });
+  });
+})();
+</script>
+{% endblock %}

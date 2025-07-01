@@ -1,0 +1,70 @@
+{# decide/templates/decide/response_list.html #}
+{% extends 'decide/base.html' %}
+{% block title %}
+  All Responses
+{% endblock %}
+
+{% block content %}
+  <div class="max-w-4xl mx-auto mt-8">
+    <h2 class="text-2xl font-bold mb-6">All Responses</h2>
+
+    {% if responses %}
+      <table class="min-w-full bg-white shadow rounded-lg overflow-hidden">
+        <thead class="bg-indigo-100">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase">Decision</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase">Prompt</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase">Answer</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase">Quadrant</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase">Answered At</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for r in responses %}
+            <tr class="{% cycle 'bg-white' 'bg-gray-50' %}">
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ r.decision.title }}</td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ r.prompt.text }}</td>
+              <td class="px-6 py-4 text-sm">
+                {% if r.answer %}
+                  <span class="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">Yes</span>
+                {% else %}
+                  <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded">No</span>
+                {% endif %}
+              </td>
+              <td class="px-6 py-4 text-sm">
+                {% with code=r.decision.quadrant %}
+                  {% if code == 'Q1' %}
+                    <span class="px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded">Urgent & Important</span>
+                  {% elif code == 'Q2' %}
+                    <span class="px-2 py-1 text-xs font-semibold text-white bg-blue-600 rounded">Not Urgent & Important</span>
+                  {% elif code == 'Q3' %}
+                    <span class="px-2 py-1 text-xs font-semibold text-white bg-yellow-500 rounded">Urgent & Not Important</span>
+                  {% elif code == 'Q4' %}
+                    <span class="px-2 py-1 text-xs font-semibold text-white bg-gray-500 rounded">Not Urgent & Not Important</span>
+                  {% else %}
+                    <span class="px-2 py-1 text-xs text-gray-500 rounded">—</span>
+                  {% endif %}
+                {% endwith %}
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-500">{{ r.answered_at|date:'M j, Y, g:i a' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% if is_paginated %}
+        <div class="mt-4 flex justify-center space-x-2">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-indigo-200 rounded hover:bg-indigo-300">Previous</a>
+          {% endif %}
+          <span class="px-3 py-1">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-indigo-200 rounded hover:bg-indigo-300">Next</a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% else %}
+      <p class="text-gray-600">No responses yet.</p>
+    {% endif %}
+  </div>
+{% endblock %}
