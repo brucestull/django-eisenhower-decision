@@ -1,6 +1,6 @@
 # Django Eisenhower Matrix App
 
-- [Django Eisenhower Matrix App](https://chatgpt.com/c/685e8571-2a98-8002-8aab-452e446eb1a5)
+- [Django Eisenhower Matrix App - ChatGPT - Private](https://chatgpt.com/c/685e8571-2a98-8002-8aab-452e446eb1a5)
 
 ## [`models.py`](decide/models.py)
 
